@@ -27,7 +27,7 @@ services:
             PUID: $$cap_ldap_puid
             PGID: $$cap_ldap_pgid
             TZ: $$cap_ldap_tz
-            LLDAP_JWT_SECRET: $$cap_ldap_secret
+            LLDAP_JWT_SECRET: $$cap_ldap_jwtsecret
             LLDAP_LDAP_USER_PASS: $$cap_ldap_pass
             LLDAP_LDAP_BASE_DN: $$cap_ldap_basedn
             LLDAP_DATABASE_URL: postgres://$$cap_db_user:$$cap_db_pass@srv-captain--$$cap_appname-db/lldap
@@ -52,7 +52,7 @@ caproverOneClickApp:
         - id: $$cap_ldap_pgid
           label: pgid
           defaultValue: 1000
-          description: Container PUID, default 1000
+          description: Container PGID, default 1000
         - id: $$cap_ldap_tz
           label: timezone
           defaultValue: etc/utc
