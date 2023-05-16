@@ -1,0 +1,120 @@
+captainVersion: 4
+services:
+
+    $$cap_appname-db:
+        documentation: Taken from https://hub.docker.com/_/postgres
+        image: postgres:$$cap_db_version
+        volumes:
+            - $$cap_appname-data:/var/lib/postgresql/data
+        restart: always
+        environment:
+            POSTGRES_USER: $$cap_db_user
+            POSTGRES_PASSWORD: $$cap_db_pass
+            POSTGRES_DB: lldap
+            POSTGRES_INITDB_ARGS: $$cap_db_initdb_args
+        caproverExtra:
+            notExposeAsWebApp: 'true'
+
+    $$cap_appname:
+        depends_on:
+            - $$cap_appname-db
+        documentation: Taken from https://github.com/lldap/lldap
+        image: nitnelave/lldap:$$cap_lldap_version
+        volumes:
+            - $$cap_appname-data:/data
+        restart: always
+        environment:
+            PUID: $$cap_ldap_puid
+            PGID: $$cap_ldap_pgid
+            TZ: $$cap_ldap_tz
+            LLDAP_JWT_SECRET: $$cap_ldap_secret
+            LLDAP_LDAP_USER_PASS: $$cap_ldap_pass
+            LLDAP_LDAP_BASE_DN: $$cap_ldap_basedn
+            LLDAP_DATABASE_URL: postgres://$$cap_db_user:$$cap_db_pass@srv-captain--$$cap_appname-db/lldap
+        caproverExtra:
+            containerHttpPort: '17170'
+
+
+caproverOneClickApp:
+
+    variables:
+        - id: $$cap_ldap_version
+          label: lldap Version
+          defaultValue: 25.0.6
+          description: >-
+              Check out their Docker page for the valid tags https://hub.docker.com/_/nextcloud?tab=tags
+              Do *not* use fpm versions.
+          validRegex: /^((?!fpm)\S)+$/
+        - id: $$cap_ldap_puid
+          label: puid
+          defaultValue: 1000
+          description: Container PUID, default 1000
+        - id: $$cap_ldap_pgid
+          label: pgid
+          defaultValue: 1000
+          description: Container PUID, default 1000
+        - id: $$cap_ldap_tz
+          label: timezone
+          defaultValue: etc/utc
+          description: Container Timezone, default etc/utc
+        - id: $$cap_ldap_basedn
+          label: ldap base domain
+          defaultValue: 'dc=example,dc=com'
+          description: Base domain used by Little LDAP, default is dc=example,dc=com
+        - id: $$cap_ldap_jwtsecret
+          label: jwt secret
+          defaultValue: $$cap_gen_random_hex(64)
+          description: JWT Secret used with Little LDAP. Keep it secret, keep it safe.
+          validRegex: /.{1,}/
+        - id: $$cap_ldap_pass
+          label: database password
+          defaultValue: $$cap_gen_random_hex(32)
+          description: Password for the Little LDAP admin user.
+          validRegex: /.{1,}/
+
+        - id: $$cap_db_version
+          label: PostGres (database) version
+          defaultValue: 15.3
+          description: >-
+            Check out their Docker page for the valid tags https://hub.docker.com/_/postgres?tab=tags
+          validRegex: /^([^\s^\/])+$/
+        - id: $$cap_db_user
+          label: database user
+          defaultValue: lldap
+          description: Username for the database.
+          validRegex: /^([a-zA-Z0-9])+$/
+        - id: $$cap_db_pass
+          label: database password
+          defaultValue: $$cap_gen_random_hex(32)
+          description: Password for the database user.
+          validRegex: /.{1,}/
+        - id: $$cap_db_initdb_args
+          label: Optional Arguments
+          description: >-
+              Arguments will be appended to `postgres initdb`.
+              Example: `--data-checksums`.
+          validRegex: /.{0,}/
+    instructions:
+        start: |-
+
+            Little LDAP is a lightweight authentication server that provides an opinionated, simplified LDAP interface for authentication. It integrates with many backends, from KeyCloak to Authelia to Nextcloud and more!
+
+            It comes with a frontend that makes user management easy, and allows users to edit their own details or reset their password by email.
+
+            The goal is not to provide a full LDAP server; more a user management system that is:
+
+            - simple to setup (no messing around with slapd),
+            - simple to manage (friendly web UI),
+            - low resources,
+            - opinionated with basic defaults so you don't have to understand the subtleties of LDAP.
+
+            It mostly targets self-hosting servers, with open-source components like Nextcloud, Airsonic and so on that only support LDAP as a source of external authentication.
+
+        end: >-
+
+            Little LDAP is deployed and will be available on $$cap_appname in a few minutes.
+
+    displayName: lldap-psql
+    isOfficial: false
+    description:  is a lightweight authentication server that provides an opinionated, simplified LDAP interface for authentication. It integrates with many backends, from Authelia to KeyCloak, from Nextcloud and whatever.
+    documentation: https://github.com/lldap/lldap

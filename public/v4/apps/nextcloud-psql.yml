@@ -1,5 +1,6 @@
 captainVersion: 4
 services:
+
     $$cap_appname-db:
         documentation: Taken from https://hub.docker.com/_/postgres
         image: postgres:$$cap_db_version
@@ -13,12 +14,14 @@ services:
             POSTGRES_INITDB_ARGS: $$cap_db_initdb_args
         caproverExtra:
             notExposeAsWebApp: 'true'
-      $$cap_appname-redis:
+
+    $$cap_appname-redis:
         documentation: Taken from https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/mariadb-cron-redis/apache/docker-compose.yml
         image: redis:$$cap_redis_version
         restart: always
         caproverExtra:
             notExposeAsWebApp: 'true'
+
     $$cap_appname:
         depends_on:
             - $$cap_appname-db
@@ -38,6 +41,7 @@ services:
             NEXTCLOUD_ADMIN_USER: $$cap_admin_user
             NEXTCLOUD_ADMIN_PASSWORD: $$cap_admin_pass
             NEXTCLOUD_TRUSTED_DOMAINS: $$cap_appname.$$cap_root_domain $$cap_hostnames
+
     $$cap_appname-cron:
         depends_on:
             - $$cap_appname-db
@@ -52,6 +56,7 @@ services:
                 - FROM nextcloud:$$cap_nextcloud_version
                 - 'ENTRYPOINT [ "/cron.sh" ] '
             notExposeAsWebApp: 'true'
+
 caproverOneClickApp:
     variables:
         - id: $$cap_nextcloud_version
@@ -67,20 +72,20 @@ caproverOneClickApp:
           defaultValue: 6.2.12
           description: Check out their Docker page for the valid tags https://hub.docker.com/_/redis?tab=tags
           validRegex: /^([^\s^\/])+$/
-        - id: $$cap_postgres_version
+        - id: $$cap_db_version
           label: PostGres (database) version
           defaultValue: 15.3
-          description: Check out their Docker page for the valid tags https://hub.docker.com/_/mariadb?tab=tags
+          description: Check out their Docker page for the valid tags https://hub.docker.com/_/postgres?tab=tags
           validRegex: /^([^\s^\/])+$/
         - id: $$cap_db_user
           label: database user
           defaultValue: nextcloud
-          description: Username for the database using mysql.
+          description: Username for the database.
           validRegex: /^([a-zA-Z0-9])+$/
         - id: $$cap_db_pass
           label: database password
           defaultValue: $$cap_gen_random_hex(32)
-          description: Password for the database user and root using mysql.
+          description: Password for the database user.
           validRegex: /.{1,}/
         - id: $$cap_db_initdb_args
           label: Optional Arguments
@@ -104,7 +109,10 @@ caproverOneClickApp:
           validRegex: /^http[s]?$/
         - id: $$cap_hostnames
           label: hostnames
-          description: Add all your additional hostnames where nextcloud will be exposed separated by space char. After first run, this variables are not reloaded by nextcloud and you will have to change the configuration according to the nextcloud's documentation.
+          description: >-
+            Add all your additional hostnames where nextcloud will be exposed separated by space char. After first run, this variables are not reloaded by nextcloud and you will have to change the configuration according to the nextcloud's documentation.
+
+            Note: appname.rootdomain is part of the script. What is entered above is additional.
     instructions:
         start: |-
             Access & share your files, calendars, contacts, mail & more from any device, on your terms. http://Nextcloud.com
