@@ -7,6 +7,7 @@ My Collection of One Click Apps for [CapRover](https://github.com/caprover/capro
 - Officer, I can explain...
 
 ### In Progress
+- Little LDAP
 - Nextcloud with the Lot (Postgres, LDAP, Redis, Cron, more?)
 
 ## How to Add a 3rd Party Repo
@@ -21,3 +22,7 @@ My Collection of One Click Apps for [CapRover](https://github.com/caprover/capro
 ## 3rd party repositories:
 - Awes0meHub: [GitHub](https://Awes0meHub.github.io/caprover-one-click-apps)
 - Jordan-Hall: [GitHub](https://oneclickapps.libertyware.io)
+
+## PLUR
+
+[Peace. Love. Unity. Respect.](https://en.wikipedia.org/wiki/PLUR)
