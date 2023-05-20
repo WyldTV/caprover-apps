@@ -25,4 +25,7 @@ My Collection of One Click Apps for [CapRover](https://github.com/caprover/capro
 
 ## PLUR
 
-[Peace. Love. Unity. Respect.](https://en.wikipedia.org/wiki/PLUR)
+- [Peace.](https://en.wikipedia.org/wiki/PLUR)
+- [Love.](https://en.wikipedia.org/wiki/PLUR)
+- [Unity.](https://en.wikipedia.org/wiki/PLUR)
+- [Respect.](https://en.wikipedia.org/wiki/PLUR)
